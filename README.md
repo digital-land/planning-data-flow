@@ -1,74 +1,88 @@
-# React + TypeScript + Vite
+# Planning Data Flow Map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive visualisation of the [Planning Data](https://www.planning.data.gov.uk) pipeline — showing how a single endpoint URL travels through collection, conversion, and transformation to produce facts and entities.
 
-Currently, two official plugins are available:
+Built with React Flow, each node in the graph fetches live data from the Planning Data APIs and displays it inline. Enter an endpoint URL and watch the data propagate through the pipeline in real time.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## What it shows
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+Endpoint ─┬─► Endpoint Health
+          │
+          └─► Resources ──► Collect ─┬──► Collect Log ──► Convert Status ──► Transform ──► Facts ──► Fact ──► Entity
+                                     │
+                                     └──► Issues
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Node | What it does |
+|---|---|
+| **Endpoint** | Input field for an endpoint URL. Looks up the dataset, endpoint hash, and resource hash via the pipeline internal API |
+| **Endpoint Health** | Shows the latest collection status for that endpoint |
+| **Resources** | Lists all resources associated with the endpoint; highlights the active one |
+| **Collect** | Process node — represents the collection stage |
+| **Collect Log** | Shows the HTTP log entries for the active resource |
+| **Convert Status** | Shows whether the resource converted successfully |
+| **Transform** | Process node — represents the transformation stage |
+| **Facts** | Lists all facts produced from the resource; click a row to select one |
+| **Fact** | Shows the full detail of the selected fact |
+| **Entity** | Fetches and displays the entity the fact belongs to |
+| **Issues** | Lists all issue types found in the resource, grouped by severity |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Data sources
+
+Each node is backed by one of three APIs:
+
+| API | Used for | Local proxy path |
+|---|---|---|
+| [Planning Data Platform](https://www.planning.data.gov.uk) | Fact and entity lookups | Direct (CORS enabled) |
+| [Pipeline Internal API](https://pipeline-internal-api.development.planning.data.gov.uk) | Endpoint health, resource mapping, issues | `/pipeline-api` |
+| [Datasette](https://datasette.planning.data.gov.uk) | Collect logs, convert status, fact resources | `/datasette` |
+
+Nodes with a light red background are Datasette-backed. The `i` badge on each node shows which API it uses and the endpoint template.
+
+---
+
+## How data flows
+
+A `GraphSyncer` component sits inside the React Flow provider and watches the node graph. Whenever a node updates its data (e.g. the Endpoint node resolves a resource hash), the syncer propagates relevant fields one hop downstream through the edges — `resource_hash`, `dataset`, `fact_hashes`, `selected_fact`, and `entity`. Each downstream node reacts to its incoming data and fires its own API call.
+
+This means the entire pipeline updates automatically when you change the endpoint URL.
+
+---
+
+## Running locally
+
+Requires [Bun](https://bun.sh).
+
+```bash
+bun install
+bun run dev
 ```
-# planning-data-flow
+
+The Vite dev server proxies `/pipeline-api` and `/datasette` to bypass CORS. The Planning Data Platform API is called directly.
+
+---
+
+## Deploying
+
+```bash
+bun run deploy
+```
+
+This builds the app and pushes the `dist` folder to the `gh-pages` branch, which GitHub Pages serves at:
+**https://pooleycodes.github.io/planning-data-flow/**
+
+> **Note:** The pipeline internal API and Datasette do not currently send CORS headers, so those nodes will not load data on the live site. Only the Fact and Entity nodes (which use the public Planning Data Platform API) are fully functional in production. To fix this, the upstream APIs need to add `Access-Control-Allow-Origin` headers, or a deployed proxy is required.
+
+---
+
+## Stack
+
+- [React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)
+- [React Flow (@xyflow/react)](https://reactflow.dev)
+- [Vite](https://vite.dev)
+- [Bun](https://bun.sh)
