@@ -25,6 +25,7 @@ import ConvertStatusNode from './nodes/ConvertStatusNode'
 import FactsNode from './nodes/FactsNode'
 import FactNode from './nodes/FactNode'
 import EntityNode from './nodes/EntityNode'
+import IssuesNode from './nodes/IssuesNode'
 
 const nodeTypes = {
   endpoint: EndpointNode,
@@ -36,6 +37,7 @@ const nodeTypes = {
   facts: FactsNode,
   fact: FactNode,
   entity: EntityNode,
+  issues: IssuesNode,
 }
 
 /**

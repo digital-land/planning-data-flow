@@ -22,6 +22,7 @@ export default function ProcessNode({ data, selected }: NodeProps) {
       <strong style={{ fontSize: 13, color: 'var(--text)' }}>{label}</strong>
       <Handle type="target" position={Position.Left} />
       <Handle type="source" position={Position.Right} />
+      <Handle type="source" id="bottom" position={Position.Bottom} />
     </div>
   )
 }

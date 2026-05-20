@@ -50,11 +50,13 @@ export type ProvisionSummaryQueryParams = {
 export type IssueTypeSummary = {
   dataset?: string
   organisation?: string
+  organisation_name?: string
   issue_type?: string
-  issue_field?: string
+  field?: string
   severity?: string
   responsibility?: string
   resource?: string
+  count_issues?: number
   [key: string]: unknown
 }
 
@@ -98,6 +100,7 @@ export type EndpointDatasetSummary = {
 export type EndpointDatasetSummaryQueryParams = {
   dataset?: string
   organisation?: string
+  endpoint_url?: string
   offset?: number
   limit?: number
 }

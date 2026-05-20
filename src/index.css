@@ -47,3 +47,8 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
+/* Allow text selection inside nodes when not dragging */
+.react-flow__node:not(.dragging) {
+  user-select: text;
+}
