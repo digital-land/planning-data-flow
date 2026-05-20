@@ -1,6 +1,6 @@
 // In dev, requests go via the Vite proxy at /pipeline-api to avoid CORS.
 // In production, set VITE_PIPELINE_API_URL to the real API origin.
-const BASE_URL = import.meta.env.VITE_PIPELINE_API_URL ?? '/pipeline-api'
+const BASE_URL = import.meta.env.VITE_PIPELINE_API_URL ?? 'https://pipeline-internal-api.development.planning.data.gov.uk'
 
 // ---- Types ----------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 // In dev, requests are proxied via Vite to avoid CORS.
 // In production, set VITE_DATASETTE_URL to the real origin.
-const BASE_URL = import.meta.env.VITE_DATASETTE_URL ?? '/datasette'
+const BASE_URL = import.meta.env.VITE_DATASETTE_URL ?? 'https://datasette.planning.data.gov.uk'
 
 // ---- Types ----------------------------------------------------------------
 
