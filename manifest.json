@@ -1,0 +1,10 @@
+{
+  "name": "Planning Data Flow",
+  "short_name": "PD Flow",
+  "icons": [
+    { "src": "/govuk-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/govuk-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "start_url": ".",
+  "display": "standalone"
+}
