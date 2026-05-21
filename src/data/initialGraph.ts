@@ -32,7 +32,7 @@ export const initialNodes: Node[] = [
   {
     id: 'issues-1',
     type: 'issues',
-    position: { x: COL * 1, y: TOP + 280 },
+    position: { x: COL * 4, y: TOP + 280 },
     data: { label: 'Issues' },
   },
   {
@@ -78,7 +78,7 @@ export const initialEdges: Edge[] = [
   { id: 'e-endpoint-resource', source: 'endpoint-1', target: 'resource-1', animated: true },
   { id: 'e-resource-collect', source: 'resource-1', target: 'process-collect', animated: true },
   { id: 'e-collect-log', source: 'process-collect', target: 'collect-log-1', animated: true },
-  { id: 'e-collect-issues', source: 'process-collect', sourceHandle: 'bottom', target: 'issues-1', targetHandle: 'top', animated: true },
+  { id: 'e-transform-issues', source: 'process-transform', sourceHandle: 'bottom', target: 'issues-1', targetHandle: 'top', animated: true },
   { id: 'e-collect-log-status', source: 'collect-log-1', target: 'convert-status-1', animated: true },
   { id: 'e-convert-transform', source: 'convert-status-1', target: 'process-transform', animated: true },
   { id: 'e-transform-facts', source: 'process-transform', target: 'facts-1', animated: true },
