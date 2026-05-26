@@ -66,7 +66,7 @@ export default function EntityNode({ data, selected }: NodeProps) {
     <div
       style={{
         background: 'var(--node-bg)',
-        border: `2px solid ${selected ? 'var(--node-selected)' : '#10b981'}`,
+        border: `2px solid ${selected ? 'var(--node-selected)' : '#ef4444'}`,
         borderRadius: 8,
         padding: '10px 14px',
         width: 340,

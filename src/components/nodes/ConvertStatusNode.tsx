@@ -91,20 +91,27 @@ export default function ConvertStatusNode({ data, selected }: NodeProps) {
       )}
 
       {status && statusStyle && (
-        <span
-          style={{
-            display: 'inline-block',
-            fontSize: 12,
-            fontWeight: 600,
-            background: statusStyle.bg,
-            color: statusStyle.text,
-            border: `1px solid ${statusStyle.border}`,
-            borderRadius: 5,
-            padding: '3px 10px',
-          }}
-        >
-          {status}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+          <span
+            style={{
+              display: 'inline-block',
+              fontSize: 12,
+              fontWeight: 600,
+              background: statusStyle.bg,
+              color: statusStyle.text,
+              border: `1px solid ${statusStyle.border}`,
+              borderRadius: 5,
+              padding: '3px 10px',
+            }}
+          >
+            {status}
+          </span>
+          {result?.elapsed && (
+            <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+              {parseFloat(result.elapsed).toFixed(2)}s
+            </span>
+          )}
+        </div>
       )}
 
       <Handle type="target" position={Position.Left} />

@@ -57,7 +57,7 @@ export default function TaskSummaryNode({ data, selected }: NodeProps) {
     <div
       style={{
         background: 'var(--node-bg)',
-        border: `2px solid ${selected ? 'var(--node-selected)' : '#f59e0b'}`,
+        border: `2px solid ${selected ? 'var(--node-selected)' : '#8b5cf6'}`,
         borderRadius: 8,
         padding: '10px 14px',
         width: 340,

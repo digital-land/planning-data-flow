@@ -228,6 +228,7 @@ export type ConvertedResource = {
   rowid: number
   resource: string
   status: string
+  elapsed?: string
   [key: string]: unknown
 }
 

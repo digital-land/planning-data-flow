@@ -56,7 +56,7 @@ export default function IssuesNode({ data, selected }: NodeProps) {
     <div
       style={{
         background: 'rgba(239,68,68,0.06)',
-        border: `2px solid ${selected ? 'var(--node-selected)' : '#ef4444'}`,
+        border: `2px solid ${selected ? 'var(--node-selected)' : '#8b5cf6'}`,
         borderRadius: 8,
         padding: '10px 14px',
         width: 340,

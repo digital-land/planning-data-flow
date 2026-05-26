@@ -4,6 +4,7 @@ import type { NodeProps } from '@xyflow/react'
 import { getDatasetResourceMapping } from '../../services/pipelineInternalApi'
 import type { DatasetResourceMapping } from '../../services/pipelineInternalApi'
 import ApiInfo from '../ApiInfo'
+import { useEndpointUrl } from '../../context/EndpointUrlContext'
 
 const API_ENDPOINT = '/performance/dataset_resource_mapping?endpoint_url=…'
 
@@ -36,8 +37,8 @@ const FIELD_LABELS: Record<string, string> = {
 export default function EndpointNode({ id, data, selected }: NodeProps) {
   const { label } = data as EndpointData
   const { updateNodeData } = useReactFlow()
+  const { endpointUrl, setEndpointUrl } = useEndpointUrl()
 
-  const [endpointUrl, setEndpointUrl] = useState('')
   const [result, setResult] = useState<DatasetResourceMapping | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
