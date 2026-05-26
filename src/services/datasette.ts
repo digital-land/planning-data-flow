@@ -269,6 +269,51 @@ export async function queryFactResource(
   return { items: result.items, truncated: result.truncated, total: result.filtered_table_rows_count }
 }
 
+export type Issue = {
+  rowid?: number
+  entity?: number
+  field?: string
+  'issue-type'?: string
+  dataset?: string
+  resource?: string
+  message?: string
+  severity?: string
+  [key: string]: unknown
+}
+
+/** Get issue rows for a given resource hash within a dataset. */
+export async function queryIssues(
+  resourceHash: string,
+  dataset: string,
+): Promise<{ items: Issue[]; truncated: boolean; total: number }> {
+  const result = await queryTable<Issue>(dataset, 'issue', {
+    'resource__exact': resourceHash,
+    '_sort': 'rowid',
+  })
+  return { items: result.items, truncated: result.truncated, total: result.filtered_table_rows_count }
+}
+
+export type ColumnField = {
+  rowid?: number
+  column?: string
+  dataset?: string
+  resource?: string
+  field?: string
+  [key: string]: unknown
+}
+
+/** Get column_field rows for a given resource hash within a dataset. */
+export async function queryColumnField(
+  resourceHash: string,
+  dataset: string,
+): Promise<{ items: ColumnField[]; truncated: boolean; total: number }> {
+  const result = await queryTable<ColumnField>(dataset, 'column_field', {
+    'resource__exact': resourceHash,
+    '_sort': 'rowid',
+  })
+  return { items: result.items, truncated: result.truncated, total: result.filtered_table_rows_count }
+}
+
 export async function queryResourceEndpoints(
   endpointHash: string,
   database = 'digital-land',

@@ -1,22 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
 import { Handle, Position } from '@xyflow/react'
 import type { NodeProps } from '@xyflow/react'
-import { queryIssues } from '../../services/datasette'
-import type { Issue } from '../../services/datasette'
+import { queryColumnField } from '../../services/datasette'
+import type { ColumnField } from '../../services/datasette'
 import ApiInfo from '../ApiInfo'
 
-const API_ENDPOINT = '/{dataset}/issue?_sort=rowid&resource__exact={resource}'
+const API_ENDPOINT = '/{dataset}/column_field?resource__exact={resource}'
 
-export type IssuesNodeData = {
+export type ColumnFieldNodeData = {
   label: string
   resource_hash?: string
   dataset?: string
 }
 
-export default function IssuesNode({ data, selected }: NodeProps) {
-  const { label, resource_hash, dataset } = data as IssuesNodeData
+export default function ColumnFieldNode({ data, selected }: NodeProps) {
+  const { label, resource_hash, dataset } = data as ColumnFieldNodeData
 
-  const [issues, setIssues] = useState<Issue[]>([])
+  const [rows, setRows] = useState<ColumnField[]>([])
   const [total, setTotal] = useState(0)
   const [truncated, setTruncated] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ export default function IssuesNode({ data, selected }: NodeProps) {
 
   useEffect(() => {
     if (!resource_hash || !dataset) {
-      setIssues([])
+      setRows([])
       setError(null)
       return
     }
@@ -35,14 +35,14 @@ export default function IssuesNode({ data, selected }: NodeProps) {
 
     setLoading(true)
     setError(null)
-    setIssues([])
+    setRows([])
 
-    queryIssues(resource_hash, dataset)
+    queryColumnField(resource_hash, dataset)
       .then(({ items, truncated: t, total: n }) => {
-        setIssues(items)
+        setRows(items)
         setTruncated(t)
         setTotal(n)
-        if (!items.length) setError('No issues found for this resource.')
+        if (!items.length) setError('No column field mappings found for this resource.')
       })
       .catch((e: unknown) => {
         if (e instanceof Error && e.name !== 'AbortError') setError(e.message)
@@ -56,7 +56,7 @@ export default function IssuesNode({ data, selected }: NodeProps) {
     <div
       style={{
         background: 'rgba(239,68,68,0.06)',
-        border: `2px solid ${selected ? 'var(--node-selected)' : '#ef4444'}`,
+        border: `2px solid ${selected ? 'var(--node-selected)' : '#8b5cf6'}`,
         borderRadius: 8,
         padding: '10px 14px',
         width: 340,
@@ -68,7 +68,7 @@ export default function IssuesNode({ data, selected }: NodeProps) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           {total > 0 && (
             <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)' }}>
-              {total}{truncated ? '+' : ''} issues
+              {total}{truncated ? '+' : ''} columns
             </span>
           )}
           <ApiInfo url={API_ENDPOINT} source="datasette" />
@@ -89,9 +89,9 @@ export default function IssuesNode({ data, selected }: NodeProps) {
         <p style={{ margin: 0, fontSize: 11, color: '#ef4444' }}>{error}</p>
       )}
 
-      {issues.length > 0 && (
+      {rows.length > 0 && (
         <div className="nodrag nowheel" style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 600, overflowY: 'auto' }}>
-          {issues.map((issue, i) => (
+          {rows.map((row, i) => (
             <div
               key={i}
               style={{
@@ -104,7 +104,7 @@ export default function IssuesNode({ data, selected }: NodeProps) {
             >
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <tbody>
-                  {Object.entries(issue).map(([key, value]) => (
+                  {Object.entries(row).map(([key, value]) => (
                     <tr key={key}>
                       <td style={{ padding: '1px 6px 1px 0', color: 'var(--text-muted)', whiteSpace: 'nowrap', verticalAlign: 'top', fontWeight: 500, fontSize: 10 }}>
                         {key}

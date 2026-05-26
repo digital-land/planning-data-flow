@@ -26,6 +26,8 @@ import FactsNode from './nodes/FactsNode'
 import FactNode from './nodes/FactNode'
 import EntityNode from './nodes/EntityNode'
 import IssuesNode from './nodes/IssuesNode'
+import TaskSummaryNode from './nodes/TaskSummaryNode'
+import ColumnFieldNode from './nodes/ColumnFieldNode'
 
 const nodeTypes = {
   endpoint: EndpointNode,
@@ -38,6 +40,8 @@ const nodeTypes = {
   fact: FactNode,
   entity: EntityNode,
   issues: IssuesNode,
+  taskSummary: TaskSummaryNode,
+  columnField: ColumnFieldNode,
 }
 
 /**
