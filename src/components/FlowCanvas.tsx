@@ -28,6 +28,7 @@ import EntityNode from './nodes/EntityNode'
 import IssuesNode from './nodes/IssuesNode'
 import TaskSummaryNode from './nodes/TaskSummaryNode'
 import ColumnFieldNode from './nodes/ColumnFieldNode'
+import TaskPipelineNode from './nodes/TaskPipelineNode'
 
 const nodeTypes = {
   endpoint: EndpointNode,
@@ -42,6 +43,7 @@ const nodeTypes = {
   issues: IssuesNode,
   taskSummary: TaskSummaryNode,
   columnField: ColumnFieldNode,
+  taskPipeline: TaskPipelineNode,
 }
 
 /**
@@ -83,21 +85,22 @@ function GraphSyncer() {
       }
     }
 
-    // 2. Generic: propagate resource_hash, dataset, and fact_hashes one hop downstream.
-    //    selected_fact is only propagated when the source node explicitly has it set,
-    //    so upstream nodes (which have selected_fact=undefined) never overwrite a
-    //    selection the user made on a downstream node.
+    // 2. Generic: propagate resource_hash, dataset, fact_hashes, organisation, and
+    //    endpoint_hash one hop downstream. selected_fact is only propagated when the
+    //    source node explicitly has it set, so upstream nodes (which have
+    //    selected_fact=undefined) never overwrite a selection the user made on a
+    //    downstream node.
     for (const source of nodes) {
-      const d = source.data as { resource_hash?: string; dataset?: string; fact_hashes?: string[]; selected_fact?: string; entity?: number }
-      const { resource_hash, dataset, fact_hashes, selected_fact, entity } = d
-      if (!resource_hash && !dataset && !fact_hashes?.length && !selected_fact && entity == null) continue
+      const d = source.data as { resource_hash?: string; dataset?: string; fact_hashes?: string[]; selected_fact?: string; entity?: number; organisation?: string; endpoint_hash?: string }
+      const { resource_hash, dataset, fact_hashes, selected_fact, entity, organisation, endpoint_hash } = d
+      if (!resource_hash && !dataset && !fact_hashes?.length && !selected_fact && entity == null && !organisation && !endpoint_hash) continue
 
       for (const edge of edges.filter((e) => e.source === source.id)) {
         const target = nodes.find((n) => n.id === edge.target)
         if (!target) continue
-        const td = target.data as { resource_hash?: string; dataset?: string; fact_hashes?: string[]; selected_fact?: string; entity?: number }
+        const td = target.data as { resource_hash?: string; dataset?: string; fact_hashes?: string[]; selected_fact?: string; entity?: number; organisation?: string; endpoint_hash?: string }
         const hashesChanged = JSON.stringify(td.fact_hashes) !== JSON.stringify(fact_hashes)
-        const baseChanged = td.resource_hash !== resource_hash || td.dataset !== dataset || hashesChanged
+        const baseChanged = td.resource_hash !== resource_hash || td.dataset !== dataset || hashesChanged || td.organisation !== organisation || td.endpoint_hash !== endpoint_hash
         const selectedFactChanged = selected_fact !== undefined && td.selected_fact !== selected_fact
         // Fact nodes own the entity value — always propagate it (including undefined to clear).
         // Other node types use "only if set" to avoid overwriting a downstream entity.
@@ -105,7 +108,7 @@ function GraphSyncer() {
         const entityChanged = propagateEntity ? td.entity !== entity : (entity != null && td.entity !== entity)
 
         if (baseChanged || selectedFactChanged || entityChanged) {
-          const updates: Record<string, unknown> = { resource_hash, dataset, fact_hashes }
+          const updates: Record<string, unknown> = { resource_hash, dataset, fact_hashes, organisation, endpoint_hash }
           if (selected_fact !== undefined) updates.selected_fact = selected_fact
           if (propagateEntity) updates.entity = entity
           else if (entity != null) updates.entity = entity

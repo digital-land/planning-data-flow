@@ -317,10 +317,31 @@ export async function queryColumnField(
 
 export async function queryResourceEndpoints(
   endpointHash: string,
+  opts: { limit?: number; offset?: number } = {},
   database = 'digital-land',
-): Promise<ResourceEndpoint[]> {
-  const result = await queryTable<ResourceEndpoint>(database, 'resource_endpoint', {
-    endpoint: endpointHash,
-  })
-  return result.items
+): Promise<{ items: ResourceEndpoint[]; total: number }> {
+  const limit = opts.limit ?? 20
+  const offset = opts.offset ?? 0
+
+  const safeHash = endpointHash.replace(/[^0-9a-f]/gi, '')
+
+  const [result, countResult] = await Promise.all([
+    query<ResourceEndpoint>(
+      database,
+      buildSelect({
+        from: 'resource_endpoint',
+        where: `endpoint = '${safeHash}'`,
+        orderBy: { column: 'rowid', direction: 'desc' },
+        limit,
+        offset,
+      }),
+    ),
+    query<{ count: number }>(
+      database,
+      `select count(*) as count from resource_endpoint where endpoint = '${safeHash}'`,
+    ),
+  ])
+
+  const total = countResult.items[0]?.count ?? 0
+  return { items: result.items, total }
 }

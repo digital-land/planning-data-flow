@@ -83,6 +83,12 @@ export const initialNodes: Node[] = [
     position: { x: COL * 7, y: TOP },
     data: { label: 'Entity' },
   },
+  {
+    id: 'task-pipeline-1',
+    type: 'taskPipeline',
+    position: { x: COL * 3, y: TOP + 280 },
+    data: { label: 'Task Pipeline from Platform' },
+  },
 ]
 
 export const initialEdges: Edge[] = [
@@ -93,6 +99,7 @@ export const initialEdges: Edge[] = [
   { id: 'e-transform-task-summary', source: 'process-transform', sourceHandle: 'bottom', target: 'task-summary-1', targetHandle: 'top', animated: true },
   { id: 'e-task-summary-issues', source: 'task-summary-1', sourceHandle: 'bottom', target: 'issues-1', targetHandle: 'top', animated: true },
   { id: 'e-task-summary-column-field', source: 'task-summary-1', sourceHandle: 'bottom', target: 'column-field-1', targetHandle: 'top', animated: true },
+  { id: 'e-task-summary-task-pipeline', source: 'task-summary-1', sourceHandle: 'left', target: 'task-pipeline-1', targetHandle: 'right', animated: true },
   { id: 'e-collect-log-status', source: 'collect-log-1', target: 'convert-status-1', animated: true },
   { id: 'e-convert-transform', source: 'convert-status-1', target: 'process-transform', animated: true },
   { id: 'e-transform-facts', source: 'process-transform', target: 'facts-1', animated: true },

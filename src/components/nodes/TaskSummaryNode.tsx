@@ -125,6 +125,7 @@ export default function TaskSummaryNode({ data, selected }: NodeProps) {
       <Handle type="target" id="top" position={Position.Top} />
       <Handle type="source" position={Position.Right} />
       <Handle type="source" id="bottom" position={Position.Bottom} />
+      <Handle type="source" id="left" position={Position.Left} />
     </div>
   )
 }

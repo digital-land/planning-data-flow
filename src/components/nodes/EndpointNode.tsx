@@ -14,6 +14,7 @@ export type EndpointData = {
   endpoint_hash?: string
   resource_hash?: string
   dataset?: string
+  organisation?: string
 }
 
 const OMIT_FIELDS = new Set(['__index_level_0__', 'latest_log_entry_date'])
@@ -74,6 +75,7 @@ export default function EndpointNode({ id, data, selected }: NodeProps) {
             endpoint_hash: item.endpoint as string | undefined,
             resource_hash: item.resource as string | undefined,
             dataset: item.dataset as string | undefined,
+            organisation: item.organisation as string | undefined,
           })
         }
       } catch (e) {

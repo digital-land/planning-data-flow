@@ -134,3 +134,36 @@ export type Fact = {
 export async function getFact(factHash: string, dataset: string): Promise<Fact> {
   return get<Fact>(`/fact/${factHash}.json`, { dataset })
 }
+
+export type Task = {
+  reference: string
+  dataset: string
+  organisation: string
+  endpoint: string
+  resource: string
+  details: {
+    count: number
+    field: string
+    issue_type: string
+  }
+  severity: string
+  responsibility: string
+  'task-source': string
+  'entry-date': string
+}
+
+export type TaskResponse = {
+  tasks: Task[]
+  count: number
+  links: Record<string, unknown>
+}
+
+export type TaskQueryParams = {
+  organisation: string
+  dataset: string
+}
+
+/** GET /task/ — fetch pipeline tasks for a given organisation and dataset */
+export async function getTasks(params: TaskQueryParams): Promise<TaskResponse> {
+  return get<TaskResponse>('/task/', params as Record<string, unknown>)
+}
